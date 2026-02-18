@@ -1,4 +1,24 @@
-/* Game menu - top right, matches reference design */
+/* Game navbar - game name left, menu right */
+
+.game-navbar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  padding-top: max(0.4rem, env(safe-area-inset-top));
+}
+
+.game-navbar__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+/* Game menu - inside navbar */
 
 .game-menu {
   position: relative;
@@ -6,12 +26,8 @@
 }
 
 .game-menu__trigger {
-  position: fixed;
-  top: env(safe-area-inset-top, 0);
-  right: env(safe-area-inset-right, 0);
-  width: 48px;
-  height: 48px;
-  margin: 0.75rem;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -48,9 +64,9 @@
 }
 
 .game-menu__dropdown {
-  position: fixed;
-  top: calc(48px + 1.5rem + env(safe-area-inset-top, 0));
-  right: calc(0.75rem + env(safe-area-inset-right, 0));
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
   min-width: 260px;
   padding: 0.75rem 0;
   background: rgba(27, 32, 45, 0.98);

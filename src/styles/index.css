@@ -118,6 +118,59 @@ body {
   justify-content: center;
 }
 
+/* Hint badge - shown before game starts, matches betting-card style */
+.game-hint-badge {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  width: min(340px, 92%);
+  padding: 0.6rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-align: center;
+  background: linear-gradient(
+    165deg,
+    rgba(22, 34, 54, 0.9) 0%,
+    rgba(15, 26, 42, 0.95) 100%
+  );
+  border-radius: 16px;
+  border: 1px solid var(--color-border);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+
+.game-hint-badge::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 229, 180, 0.2) 0%,
+    transparent 50%,
+    rgba(0, 229, 180, 0.05) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+@media (max-width: 400px) {
+  .game-hint-badge {
+    font-size: 0.85rem;
+    width: min(300px, 94%);
+  }
+}
+
 .game-logo {
   position: relative;
   z-index: 1;
@@ -126,6 +179,11 @@ body {
   object-fit: contain;
   filter: drop-shadow(0 0 30px var(--color-accent-glow));
   animation: game-logo-idle 2.5s ease-in-out infinite;
+}
+
+.game-logo--tappable {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 @keyframes game-logo-idle {

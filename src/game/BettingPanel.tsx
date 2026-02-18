@@ -1,12 +1,32 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { LEVELS } from '@/game/MultiplierLevels';
 
 const DEFAULT_BALANCE = 10000;
 const MIN_BET = 1;
 const MAX_BET = 10000;
 
-export function BettingPanel() {
+function getMultiplier(level: number): number {
+  return LEVELS.find((l) => l.level === level)?.multiplier ?? 1;
+}
+
+interface BettingPanelProps {
+  round?: number;
+  gameStarted?: boolean;
+  onGameStart?: () => void;
+  onGameEnd?: () => void;
+  onStartRequest?: (start: () => void) => void;
+}
+
+export function BettingPanel({
+  round = 1,
+  gameStarted = false,
+  onGameStart,
+  onGameEnd,
+  onStartRequest,
+}: BettingPanelProps) {
   const [balance, setBalance] = useState(DEFAULT_BALANCE);
   const [bet, setBet] = useState(1);
+  const prevGameStartedRef = useRef(gameStarted);
 
   const clampBet = useCallback((value: number) => {
     return Math.max(MIN_BET, Math.min(MAX_BET, Math.round(value)));
@@ -37,13 +57,32 @@ export function BettingPanel() {
     setBet((b) => clampBet(b / 2));
   }, [clampBet]);
 
+  useEffect(() => {
+    if (gameStarted && !prevGameStartedRef.current) {
+      setBalance((b) => (b >= bet ? b - bet : b));
+    }
+    prevGameStartedRef.current = gameStarted;
+  }, [gameStarted, bet]);
+
   const handlePlay = useCallback(() => {
     if (bet > balance || bet < MIN_BET) return;
-    setBalance((b) => b - bet);
-    // TODO: Start game round
-  }, [bet, balance]);
+    onGameStart?.();
+  }, [bet, balance, onGameStart]);
 
-  const canPlay = bet <= balance && bet >= MIN_BET;
+  useEffect(() => {
+    onStartRequest?.(handlePlay);
+  }, [handlePlay, onStartRequest]);
+
+  const handleCashOut = useCallback(() => {
+    const multiplier = getMultiplier(round);
+    const payout = bet * multiplier;
+    setBalance((b) => b + payout);
+    onGameEnd?.();
+  }, [round, bet, onGameEnd]);
+
+  const canPlay = !gameStarted && bet <= balance && bet >= MIN_BET;
+  const showCashOut = gameStarted && round > 1;
+  const cashOutAmount = showCashOut ? bet * getMultiplier(round) : 0;
 
   return (
     <div className="betting-panel">
@@ -58,16 +97,29 @@ export function BettingPanel() {
           </div>
         </div>
 
-        <button
-          type="button"
-          className="play-button"
-          onClick={handlePlay}
-          disabled={!canPlay}
-          aria-label="Play"
-        >
-          <span className="play-button__icon" aria-hidden>▶</span>
-          {/* <span className="play-button__label">PLAY</span> */}
-        </button>
+        {showCashOut ? (
+          <button
+            type="button"
+            className="play-button play-button--cashout"
+            onClick={handleCashOut}
+            aria-label="Cash out"
+          >
+            <span className="play-button__cashout-label">CASH OUT</span>
+            <span className="play-button__cashout-amount">
+              ${cashOutAmount.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+            </span>
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="play-button"
+            onClick={handlePlay}
+            disabled={!canPlay}
+            aria-label="Play"
+          >
+            <span className="play-button__icon" aria-hidden>▶</span>
+          </button>
+        )}
 
         <div className="betting-panel__right">
           <div className="betting-card betting-card--bet">

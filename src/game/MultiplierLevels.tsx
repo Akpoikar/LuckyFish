@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-const LEVELS = [
+export const LEVELS = [
   { level: 1, multiplier: 1.18 },
   { level: 2, multiplier: 1.5 },
   { level: 3, multiplier: 2.21 },
@@ -33,7 +33,7 @@ export function MultiplierLevels({ value: activeLevel, onChange }: MultiplierLev
   );
 
   const startIndex = Math.max(0, Math.min(activeLevel - 1, LEVELS.length - VISIBLE_COUNT));
-  const itemWidth = 56;
+  const itemWidth = 64;
   const gap = 8;
   const translatePx = startIndex * (itemWidth + gap);
 

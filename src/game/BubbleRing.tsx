@@ -9,8 +9,8 @@ function getBubbleCount(round: number): number {
 
 /** Animation gets faster per level: level 1 = slowest, level 10 = fastest */
 function getAnimationTiming(round: number) {
-  const duration = 0.4 - (0.15 / 9) * (round - 1); // 0.4s → 0.25s
-  const delayStep = 0.2 - (0.1 / 9) * (round - 1); // 0.2s → 0.1s
+  const duration = 0.25 - (0.1 / 9) * (round - 1); // 0.25s → 0.15s
+  const delayStep = 0.1 - (0.05 / 9) * (round - 1); // 0.1s → 0.05s
   return { duration, delayStep };
 }
 

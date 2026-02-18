@@ -2,7 +2,7 @@
 
 .multiplier-levels {
   flex-shrink: 0;
-  padding: 0.75rem 1rem;
+  padding: 0.15rem 1rem;
   display: flex;
   justify-content: center;
 }
@@ -27,8 +27,8 @@
 }
 
 .multiplier-levels__viewport {
-  width: 310px;
-  max-width: calc(100vw - 6rem);
+  width: 380px;
+  max-width: calc(100vw - 4rem);
   overflow: hidden;
 }
 
@@ -40,8 +40,8 @@
 }
 
 .multiplier-levels__item {
-  flex: 0 0 56px;
-  width: 56px;
+  flex: 0 0 64px;
+  width: 64px;
   display: flex;
   flex-direction: column;
   align-items: center;

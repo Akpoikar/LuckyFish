@@ -303,6 +303,37 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
+/* Cash out button - yellow variant */
+.play-button--cashout {
+  flex-direction: column;
+  gap: 0.15rem;
+  background: linear-gradient(145deg, #f5c400 0%, #e5a800 50%, #d49400 100%);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+
+.play-button--cashout:active {
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.15) inset,
+    0 2px 12px rgba(245, 196, 0, 0.4);
+}
+
+.play-button__cashout-label {
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: rgba(0, 0, 0, 0.85);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+.play-button__cashout-amount {
+  font-size: 1rem;
+  font-weight: 800;
+  color: rgba(0, 0, 0, 0.9);
+  letter-spacing: -0.02em;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
 /* Mobile: compact layout, prevent overflow */
 @media (max-width: 480px) {
   .betting-panel {
@@ -350,5 +381,13 @@
 
   .play-button__icon {
     font-size: 1.75rem;
+  }
+
+  .play-button__cashout-label {
+    font-size: 0.5rem;
+  }
+
+  .play-button__cashout-amount {
+    font-size: 0.9rem;
   }
 }

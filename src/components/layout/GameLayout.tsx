@@ -12,7 +12,10 @@ export function GameLayout({ children }: GameLayoutProps) {
       <div className="game-bg" aria-hidden />
       <BubbleBackground />
       <div className="game-content">
-        <GameMenu />
+        <nav className="game-navbar">
+          <h1 className="game-navbar__title">Lucky Fishy</h1>
+          <GameMenu />
+        </nav>
         {children}
       </div>
     </div>
