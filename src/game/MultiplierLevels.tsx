@@ -37,8 +37,6 @@ export function MultiplierLevels({ value: activeLevel, onChange }: MultiplierLev
   const gap = 8;
   const translatePx = startIndex * (itemWidth + gap);
 
-  const hasMore = activeLevel < LEVELS.length;
-
   return (
     <div className="multiplier-levels">
       <div className="multiplier-levels__container">
