@@ -1,0 +1,111 @@
+/* Bubble ring around fish - based on mine-game reference */
+
+.bubble-ring {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.bubble-ring__bubble {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 96px;
+  height: 96px;
+  margin-left: -48px;
+  margin-top: -48px;
+  transform: translate(var(--bubble-x, 0), var(--bubble-y, 0));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s;
+  pointer-events: auto;
+  cursor: pointer;
+  animation: bubble-ring-appear 0.4s ease-out backwards;
+  animation-delay: var(--bubble-delay, 0s);
+}
+
+.bubble-ring__bubble:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(var(--bubble-x, 0), var(--bubble-y, 0)) scale(1.05);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+@keyframes bubble-ring-appear {
+  from {
+    opacity: 0;
+    transform: translate(var(--bubble-x, 0), var(--bubble-y, 0)) scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: translate(var(--bubble-x, 0), var(--bubble-y, 0)) scale(1);
+  }
+}
+
+.bubble-ring__glass {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    transparent 60%
+  );
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.bubble-ring__worm {
+  position: relative;
+  width: 67px;
+  height: 67px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: bubble-ring-worm-idle 2.5s ease-in-out infinite;
+}
+
+.bubble-ring__worm-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+@keyframes bubble-ring-worm-idle {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translateY(-4px) rotate(2deg) scale(1.05);
+  }
+  50% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  75% {
+    transform: translateY(-2px) rotate(-2deg) scale(1.03);
+  }
+}
+
+@media (min-width: 640px) {
+  .bubble-ring__bubble {
+    width: 115px;
+    height: 115px;
+    margin-left: -57.5px;
+    margin-top: -57.5px;
+  }
+
+  .bubble-ring__worm {
+    width: 77px;
+    height: 77px;
+  }
+}

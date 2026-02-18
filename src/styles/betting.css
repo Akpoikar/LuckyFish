@@ -1,0 +1,354 @@
+/* Betting panel - premium casino UI */
+
+.betting-panel {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem max(1.25rem, env(safe-area-inset-bottom));
+  background: linear-gradient(
+    180deg,
+    rgba(5, 13, 24, 0.4) 0%,
+    rgba(5, 13, 24, 0.85) 40%,
+    rgba(5, 13, 24, 0.95) 100%
+  );
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  border-top: 1px solid var(--color-border);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -4px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.betting-panel__row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 1rem;
+  overflow: hidden;
+}
+
+.betting-panel__left,
+.betting-panel__right {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  flex: 1 1 0;
+  min-width: 0;
+  justify-content: center;
+}
+
+.betting-panel__left {
+  justify-content: flex-end;
+}
+
+.betting-panel__right {
+  justify-content: flex-start;
+}
+
+/* Premium glass cards */
+.betting-card {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(
+    165deg,
+    rgba(22, 34, 54, 0.9) 0%,
+    rgba(15, 26, 42, 0.95) 100%
+  );
+  border-radius: 16px;
+  border: 1px solid var(--color-border);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.betting-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 229, 180, 0.2) 0%,
+    transparent 50%,
+    rgba(0, 229, 180, 0.05) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.betting-card__label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.betting-card__value {
+  font-size: clamp(1.1rem, 3.5vw, 1.35rem);
+  font-weight: 800;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.betting-card__currency {
+  margin-right: 0.2em;
+  font-weight: 700;
+  color: var(--color-accent);
+  opacity: 0.95;
+}
+
+/* Balance */
+.betting-card--balance {
+  min-width: 100px;
+}
+
+.betting-card--balance .betting-card__value {
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 255, 255, 0.08);
+}
+
+/* Bet */
+.betting-card--bet {
+  min-width: 0;
+}
+
+.betting-card__bet-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.betting-card__input {
+  width: 6ch;
+  min-width: 2ch;
+  font-size: clamp(1.1rem, 3.5vw, 1.35rem);
+  font-weight: 800;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
+  font-family: inherit;
+  text-align: center;
+}
+
+.betting-card__input:focus {
+  outline: 2px solid var(--color-border-bright);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.betting-card__input::-webkit-outer-spin-button,
+.betting-card__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.betting-card__arrows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.betting-card__arrow {
+  width: 28px;
+  height: 16px;
+  padding: 0;
+  font-size: 0.55rem;
+  color: var(--color-muted);
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.25) 0%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.betting-card__arrow:hover {
+  color: var(--color-accent);
+  border-color: var(--color-border-bright);
+  background: linear-gradient(
+    180deg,
+    rgba(0, 229, 180, 0.12) 0%,
+    rgba(0, 229, 180, 0.04) 100%
+  );
+}
+
+.betting-card__arrow:active {
+  transform: scale(0.95);
+}
+
+/* Play button - hero CTA */
+.play-button {
+  position: relative;
+  flex-shrink: 0;
+  width: 96px;
+  height: 96px;
+  min-width: 96px;
+  min-height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #00f5c4 0%, #00d4a0 50%, #00b894 100%);
+  border: 3px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: box-shadow 0.2s, filter 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
+}
+
+.play-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.3) 0%,
+    transparent 45%,
+    rgba(0, 0, 0, 0.05) 100%
+  );
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.play-button:hover:not(:disabled) {
+  /* box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.1) inset,
+    0 6px 24px rgba(0, 229, 180, 0.55),
+    0 10px 36px rgba(0, 184, 148, 0.35); */
+}
+
+.play-button:active:not(:disabled) {
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.15) inset,
+    0 2px 12px rgba(0, 229, 180, 0.4);
+}
+
+.play-button:disabled {
+  filter: grayscale(0.8) brightness(0.7);
+  opacity: 0.8;
+  cursor: not-allowed;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.play-button__hold-label,
+.play-button__autoplay-label {
+  position: absolute;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.play-button__hold-label {
+  top: 0.4rem;
+}
+
+.play-button__autoplay-label {
+  bottom: 0.4rem;
+  font-size: 0.45rem;
+}
+
+.play-button__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.25rem;
+  color: white;
+  line-height: 1;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  margin-left: 3px;
+}
+
+.play-button__label {
+  position: relative;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.95);
+  margin-top: 0.15rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Mobile: compact layout, prevent overflow */
+@media (max-width: 480px) {
+  .betting-panel {
+    padding: 0.75rem 0 max(0.75rem, env(safe-area-inset-bottom));
+  }
+
+  .betting-panel__row {
+    gap: 0.4rem;
+    padding: 0 0.5rem;
+  }
+
+  .betting-card {
+    padding: 0.4rem 0.5rem;
+  }
+
+  .betting-card--balance {
+    min-width: 0;
+  }
+
+  .betting-card__value,
+  .betting-card__input {
+    font-size: 1rem;
+  }
+
+  .betting-card__input {
+    width: 4ch;
+  }
+
+  .betting-card__arrows {
+    flex-shrink: 0;
+  }
+
+  .betting-card__arrow {
+    width: 24px;
+    height: 14px;
+  }
+
+  .play-button {
+    flex-shrink: 0;
+    width: 72px;
+    height: 72px;
+    min-width: 72px;
+    min-height: 72px;
+  }
+
+  .play-button__icon {
+    font-size: 1.75rem;
+  }
+}
