@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 /**
  * Bubble count per round: round 1 = 5, round 2 = 6, ... round 10 = 15
@@ -7,17 +7,31 @@ function getBubbleCount(round: number): number {
   return Math.round(5 + ((15 - 5) / 9) * (round - 1));
 }
 
+/** Animation gets faster per level: level 1 = slowest, level 10 = fastest */
+function getAnimationTiming(round: number) {
+  const duration = 0.4 - (0.15 / 9) * (round - 1); // 0.4s → 0.25s
+  const delayStep = 0.2 - (0.1 / 9) * (round - 1); // 0.2s → 0.1s
+  return { duration, delayStep };
+}
+
+const DESIGN_SIZE = 360;
+
 interface BubbleRingProps {
   round?: number;
+  containerSize?: number;
   onBubbleClick?: () => void;
 }
 
-export function BubbleRing({ round = 1, onBubbleClick }: BubbleRingProps) {
+export function BubbleRing({ round = 1, containerSize = DESIGN_SIZE, onBubbleClick }: BubbleRingProps) {
+  const [animationComplete, setAnimationComplete] = useState(false);
   const bubbleCount = useMemo(() => getBubbleCount(round), [round]);
+  const { duration, delayStep } = useMemo(() => getAnimationTiming(round), [round]);
 
   const bubbles = useMemo(() => {
     const visibleRows = bubbleCount;
-    const radius = 130 + Math.max(0, Math.min(visibleRows - 6, 9)) * 5;
+    const baseRadius = 130 + Math.max(0, Math.min(visibleRows - 6, 9)) * 5;
+    const scale = containerSize / DESIGN_SIZE;
+    const radius = baseRadius * scale;
 
     return Array.from({ length: visibleRows }, (_, rowIndex) => {
       const angleDeg = (360 / visibleRows) * rowIndex - 90;
@@ -26,28 +40,48 @@ export function BubbleRing({ round = 1, onBubbleClick }: BubbleRingProps) {
       const y = Math.sin(angleRad) * radius;
       return { x, y, rowIndex };
     });
-  }, [bubbleCount]);
+  }, [bubbleCount, containerSize]);
+
+  const totalAnimationMs = (bubbleCount - 1) * delayStep * 1000 + duration * 1000;
+
+  useEffect(() => {
+    setAnimationComplete(false);
+    const t = setTimeout(() => setAnimationComplete(true), totalAnimationMs);
+    return () => clearTimeout(t);
+  }, [round, totalAnimationMs]);
+
+  const canClick = animationComplete && onBubbleClick;
+  const scale = containerSize / DESIGN_SIZE;
 
   return (
-    <div className="bubble-ring">
+    <div
+      className={`bubble-ring ${!animationComplete ? 'bubble-ring--animating' : ''}`}
+      style={
+        {
+          '--bubble-duration': `${duration}s`,
+          '--bubble-delay-step': `${delayStep}s`,
+          '--bubble-scale': scale,
+        } as React.CSSProperties
+      }
+    >
       {bubbles.map(({ x, y, rowIndex }) => (
         <div
           key={rowIndex}
           className="bubble-ring__bubble"
           role="button"
-          tabIndex={0}
-          onClick={onBubbleClick}
-          onKeyDown={(e) => e.key === 'Enter' && onBubbleClick?.()}
+          tabIndex={canClick ? 0 : -1}
+          onClick={canClick ? onBubbleClick : undefined}
+          onKeyDown={canClick ? (e) => e.key === 'Enter' && onBubbleClick?.() : undefined}
           style={{
             '--bubble-x': `${x}px`,
             '--bubble-y': `${y}px`,
-            '--bubble-delay': `${rowIndex * 0.2}s`,
+            '--bubble-delay': `${rowIndex * delayStep}s`,
           } as React.CSSProperties}
         >
           <div className="bubble-ring__glass" />
           <div
             className="bubble-ring__worm"
-            style={{ animationDelay: `${rowIndex * 0.2}s` }}
+            style={{ animationDelay: `${rowIndex * delayStep}s` }}
           >
             <img
               src="/images/worm.png"

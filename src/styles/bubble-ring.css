@@ -10,14 +10,19 @@
   pointer-events: none;
 }
 
+.bubble-ring--animating .bubble-ring__bubble {
+  pointer-events: none;
+  cursor: default;
+}
+
 .bubble-ring__bubble {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 96px;
-  height: 96px;
-  margin-left: -48px;
-  margin-top: -48px;
+  width: calc(96px * var(--bubble-scale, 1));
+  height: calc(96px * var(--bubble-scale, 1));
+  margin-left: calc(-48px * var(--bubble-scale, 1));
+  margin-top: calc(-48px * var(--bubble-scale, 1));
   transform: translate(var(--bubble-x, 0), var(--bubble-y, 0));
   display: flex;
   align-items: center;
@@ -31,7 +36,7 @@
   transition: all 0.3s;
   pointer-events: auto;
   cursor: pointer;
-  animation: bubble-ring-appear 0.4s ease-out backwards;
+  animation: bubble-ring-appear var(--bubble-duration, 0.4s) ease-out backwards;
   animation-delay: var(--bubble-delay, 0s);
 }
 
@@ -67,8 +72,8 @@
 
 .bubble-ring__worm {
   position: relative;
-  width: 67px;
-  height: 67px;
+  width: calc(67px * var(--bubble-scale, 1));
+  height: calc(67px * var(--bubble-scale, 1));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -98,14 +103,14 @@
 
 @media (min-width: 640px) {
   .bubble-ring__bubble {
-    width: 115px;
-    height: 115px;
-    margin-left: -57.5px;
-    margin-top: -57.5px;
+    width: calc(115px * var(--bubble-scale, 1));
+    height: calc(115px * var(--bubble-scale, 1));
+    margin-left: calc(-57.5px * var(--bubble-scale, 1));
+    margin-top: calc(-57.5px * var(--bubble-scale, 1));
   }
 
   .bubble-ring__worm {
-    width: 77px;
-    height: 77px;
+    width: calc(77px * var(--bubble-scale, 1));
+    height: calc(77px * var(--bubble-scale, 1));
   }
 }
