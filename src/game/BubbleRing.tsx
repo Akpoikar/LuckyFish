@@ -1,16 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
+import { getBubbleCount } from './gameConfig';
 
-/**
- * Bubble count per round: round 1 = 5, round 2 = 6, ... round 10 = 15
- */
-function getBubbleCount(round: number): number {
-  return Math.round(5 + ((15 - 5) / 9) * (round - 1));
-}
-
-/** Animation gets faster per level: level 1 = slowest, level 10 = fastest */
-function getAnimationTiming(round: number) {
-  const duration = 0.25 - (0.1 / 9) * (round - 1); // 0.25s → 0.15s
-  const delayStep = 0.1 - (0.05 / 9) * (round - 1); // 0.1s → 0.05s
+/** Animation gets faster per level: level 1 = slowest, level 9 = fastest */
+function getAnimationTiming(level: number) {
+  const duration = 0.25 - (0.1 / 8) * (level - 1); // 0.25s → 0.15s
+  const delayStep = 0.1 - (0.05 / 8) * (level - 1); // 0.1s → 0.05s
   return { duration, delayStep };
 }
 

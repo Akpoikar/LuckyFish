@@ -38,7 +38,7 @@ Start a new round. Deducts the bet from the user's balance.
 | Field      | Type   | Description                    |
 |------------|--------|--------------------------------|
 | betAmount  | number | Bet amount in dollars          |
-| level      | number | Selected level (1–10)           |
+| level      | number | Selected level (1–9)            |
 
 **Response:**
 ```json
@@ -133,19 +133,18 @@ User cashes out. Payout is calculated from the current level multiplier.
 | payout  | number | Amount won (bet × multiplier)  |
 | balance | number | User balance after payout      |
 
-**Multipliers by level:**
-| Level | Multiplier |
-|-------|------------|
-| 1     | 1.18x      |
-| 2     | 1.5x       |
-| 3     | 2.21x      |
-| 4     | 3.25x      |
-| 5     | 6.4x       |
-| 6     | 13.5x      |
-| 7     | 30x        |
-| 8     | 70x        |
-| 9     | 155x       |
-| 10    | 320x       |
+**Multipliers and bubble/bomb counts by level:**
+| Level | Bubbles | Bombs | Multiplier |
+|-------|---------|-------|------------|
+| 1     | 5       | 1     | 1.18x      |
+| 2     | 6       | 2     | 1.48x      |
+| 3     | 7       | 3     | 2.05x      |
+| 4     | 8       | 4     | 3.20x      |
+| 5     | 9       | 5     | 6.30x      |
+| 6     | 10      | 6     | 13.20x     |
+| 7     | 10      | 7     | 32.00x     |
+| 8     | 10      | 8     | 95.00x     |
+| 9     | 10      | 9     | 580.00x    |
 
 **Errors:** `400` if round not found or round already ended.
 

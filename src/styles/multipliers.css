@@ -114,6 +114,51 @@
   text-shadow: 0 0 12px rgba(255, 213, 79, 0.4);
 }
 
+/* Hard levels (6–9) - red accent to indicate higher difficulty */
+.multiplier-levels__item--hard {
+  position: relative;
+  border-color: rgba(220, 80, 80, 0.5);
+  box-shadow:
+    0 2px 12px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 2px 0 0 rgba(220, 80, 80, 0.4);
+}
+
+/* Red line before level 6 to mark start of hard levels */
+.multiplier-levels__item--hard:first-of-type::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background: linear-gradient(180deg, transparent, rgba(220, 80, 80, 0.8), transparent);
+  border-radius: 1px;
+}
+
+.multiplier-levels__item--hard:hover {
+  border-color: rgba(220, 80, 80, 0.7);
+}
+
+.multiplier-levels__item--hard .multiplier-levels__label {
+  color: rgba(220, 120, 120, 0.9);
+}
+
+.multiplier-levels__item--hard.multiplier-levels__item--active {
+  border-color: rgba(220, 80, 80, 0.8);
+  box-shadow:
+    0 0 0 2px rgba(220, 80, 80, 0.4),
+    0 4px 20px rgba(220, 80, 80, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 2px 0 0 rgba(220, 80, 80, 0.5);
+}
+
+.multiplier-levels__item--hard.multiplier-levels__item--active .multiplier-levels__label,
+.multiplier-levels__item--hard.multiplier-levels__item--active .multiplier-levels__value {
+  color: #ff9a9a;
+  text-shadow: 0 0 12px rgba(255, 120, 120, 0.4);
+}
+
 /* Arrow indicator */
 .multiplier-levels__arrow {
   display: flex;

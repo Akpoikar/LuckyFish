@@ -133,6 +133,12 @@
   min-width: 0;
 }
 
+.betting-card--disabled .betting-card__input,
+.betting-card--disabled .betting-card__arrow {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .betting-card__bet-row {
   display: flex;
   align-items: center;

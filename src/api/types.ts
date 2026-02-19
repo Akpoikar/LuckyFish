@@ -13,7 +13,7 @@ export interface BalanceResponse {
 
 export interface PlayRequest {
   betAmount: number;
-  level: number; // 1-10
+  level: number; // 1-9
 }
 
 export interface PlayResponse {

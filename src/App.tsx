@@ -3,6 +3,7 @@ import { GameLayout } from '@/components/layout/GameLayout';
 import { BettingPanel } from '@/game/BettingPanel';
 import { MultiplierLevels } from '@/game/MultiplierLevels';
 import { BubbleRing } from '@/game/BubbleRing';
+import { getBombCount, MAX_LEVEL } from '@/game/gameConfig';
 
 export function App() {
   const [round, setRound] = useState(1);
@@ -46,7 +47,7 @@ export function App() {
               key={round}
               round={round}
               containerSize={centerSize}
-              onBubbleClick={() => setRound((r) => Math.min(r + 1, 10))}
+              onBubbleClick={() => setRound((r) => Math.min(r + 1, MAX_LEVEL))}
             />
           )}
           <img
@@ -63,7 +64,7 @@ export function App() {
           <div className="game-bomb-badge">
             <span className="game-bomb-badge__icon">💣</span>
             <span className="game-bomb-badge__count">
-              {round} {round === 1 ? 'bomb' : 'bombs'}
+              {getBombCount(round)} {getBombCount(round) === 1 ? 'bomb' : 'bombs'}
             </span>
           </div>
         )}

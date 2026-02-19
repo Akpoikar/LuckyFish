@@ -1,13 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { LEVELS } from '@/game/MultiplierLevels';
+import { getMultiplier } from '@/game/gameConfig';
 
 const DEFAULT_BALANCE = 10000;
 const MIN_BET = 1;
 const MAX_BET = 10000;
-
-function getMultiplier(level: number): number {
-  return LEVELS.find((l) => l.level === level)?.multiplier ?? 1;
-}
 
 interface BettingPanelProps {
   round?: number;
@@ -122,7 +118,7 @@ export function BettingPanel({
         )}
 
         <div className="betting-panel__right">
-          <div className="betting-card betting-card--bet">
+          <div className={`betting-card betting-card--bet ${gameStarted ? 'betting-card--disabled' : ''}`}>
             <span className="betting-card__label">BET</span>
             <div className="betting-card__bet-row">
               <span className="betting-card__currency">$</span>
@@ -133,6 +129,7 @@ export function BettingPanel({
                 value={bet}
                 onChange={handleBetChange}
                 onBlur={handleBetBlur}
+                disabled={gameStarted}
                 aria-label="Bet amount"
               />
               <div className="betting-card__arrows">
@@ -140,6 +137,7 @@ export function BettingPanel({
                   type="button"
                   className="betting-card__arrow"
                   onClick={handleBetUp}
+                  disabled={gameStarted}
                   aria-label="Increase bet"
                 >
                   ▲
@@ -148,6 +146,7 @@ export function BettingPanel({
                   type="button"
                   className="betting-card__arrow"
                   onClick={handleBetDown}
+                  disabled={gameStarted}
                   aria-label="Decrease bet"
                 >
                   ▼
