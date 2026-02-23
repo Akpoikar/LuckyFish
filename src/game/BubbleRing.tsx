@@ -78,7 +78,7 @@ export function BubbleRing({ round = 1, containerSize = DESIGN_SIZE, onBubbleCli
             style={{ animationDelay: `${rowIndex * delayStep}s` }}
           >
             <img
-              src="/images/worm.png"
+              src={`${import.meta.env.BASE_URL}images/worm.webp`}
               alt=""
               className="bubble-ring__worm-img"
             />

@@ -1,11 +1,37 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { GameLayout } from '@/components/layout/GameLayout';
+import { LoadingScreen } from '@/components/LoadingScreen';
 import { BettingPanel } from '@/game/BettingPanel';
 import { MultiplierLevels } from '@/game/MultiplierLevels';
 import { BubbleRing } from '@/game/BubbleRing';
+import { useAuth } from '@/context/AuthContext';
 import { getBombCount, MAX_LEVEL } from '@/game/gameConfig';
 
 export function App() {
+  const auth = useAuth();
+
+  if (auth.status === 'loading') {
+    return <LoadingScreen />;
+  }
+
+  if (auth.status === 'error') {
+    return (
+      <div className="game-layout">
+        <div
+          className="game-bg"
+          aria-hidden
+          style={{
+            backgroundImage: `url(${import.meta.env.BASE_URL}images/underwater-bg.webp)`,
+          }}
+        />
+        <div className="auth-error">
+          <h2>Unable to load game</h2>
+          <p>{auth.error}</p>
+        </div>
+      </div>
+    );
+  }
+
   const [round, setRound] = useState(1);
   const [gameStarted, setGameStarted] = useState(false);
   const [centerSize, setCenterSize] = useState(360);
@@ -51,7 +77,7 @@ export function App() {
             />
           )}
           <img
-            src="/images/fish.png"
+            src={`${import.meta.env.BASE_URL}images/fish.webp`}
             alt="Lucky Fish"
             className={`game-logo ${!gameStarted ? 'game-logo--tappable' : ''}`}
             role={!gameStarted ? 'button' : undefined}
@@ -72,6 +98,13 @@ export function App() {
       <BettingPanel
         round={round}
         gameStarted={gameStarted}
+        initialBalance={auth.balance}
+        minBet={auth.config?.minBet}
+        maxBet={auth.config?.maxBet}
+        defaultBet={auth.config?.defaultBetLevel}
+        stepBet={auth.config?.stepBet}
+        betLevels={auth.config?.betLevels}
+        currencyCode={auth.currency}
         onGameStart={() => setGameStarted(true)}
         onGameEnd={handleGameEnd}
         onStartRequest={handleStartRequest}

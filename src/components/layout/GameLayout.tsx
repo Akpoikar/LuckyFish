@@ -9,7 +9,13 @@ interface GameLayoutProps {
 export function GameLayout({ children }: GameLayoutProps) {
   return (
     <div className="game-layout">
-      <div className="game-bg" aria-hidden />
+      <div
+        className="game-bg"
+        aria-hidden
+        style={{
+          backgroundImage: `url(${import.meta.env.BASE_URL}images/underwater-bg.webp)`,
+        }}
+      />
       <BubbleBackground />
       <div className="game-content">
         <nav className="game-navbar">

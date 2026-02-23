@@ -3,6 +3,47 @@
  * Shared types for API requests and responses
  */
 
+/* --- Wallet (RGS) --- */
+
+export interface WalletAuthenticateRequest {
+  sessionID: string;
+}
+
+export interface WalletBalance {
+  amount: number;
+  currency: string;
+}
+
+export interface WalletBetConfig {
+  minBet: number;
+  maxBet: number;
+  stepBet: number;
+  defaultBetLevel: number;
+  betLevels: number[];
+}
+
+export interface WalletJurisdiction {
+  socialCasino?: boolean;
+  disabledFullscreen?: boolean;
+  disabledTurbo?: boolean;
+  [key: string]: unknown;
+}
+
+export interface WalletConfig {
+  minBet: number;
+  maxBet: number;
+  stepBet: number;
+  defaultBetLevel: number;
+  betLevels: number[];
+  jurisdiction?: WalletJurisdiction;
+}
+
+export interface WalletAuthenticateResponse {
+  balance: WalletBalance;
+  config: WalletConfig;
+  round?: unknown; // Active or last completed round - structure TBD
+}
+
 /* --- User --- */
 
 export interface BalanceResponse {

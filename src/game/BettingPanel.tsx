@@ -1,13 +1,28 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { getMultiplier } from '@/game/gameConfig';
+import {
+  formatDisplayBalance,
+  formatAmountForDisplay,
+  parseDisplayToInternal,
+  CURRENCY_META,
+  MONEY_PRECISION,
+} from '@/utils/currency';
 
-const DEFAULT_BALANCE = 10000;
-const MIN_BET = 1;
-const MAX_BET = 10000;
+const FALLBACK_MIN_BET = 1 * MONEY_PRECISION;
+const FALLBACK_MAX_BET = 10000 * MONEY_PRECISION;
+const FALLBACK_DEFAULT_BET = 1 * MONEY_PRECISION;
+const FALLBACK_BALANCE = 10000 * MONEY_PRECISION;
 
 interface BettingPanelProps {
   round?: number;
   gameStarted?: boolean;
+  initialBalance?: number;
+  minBet?: number;
+  maxBet?: number;
+  defaultBet?: number;
+  stepBet?: number;
+  betLevels?: number[];
+  currencyCode?: string;
   onGameStart?: () => void;
   onGameEnd?: () => void;
   onStartRequest?: (start: () => void) => void;
@@ -16,29 +31,52 @@ interface BettingPanelProps {
 export function BettingPanel({
   round = 1,
   gameStarted = false,
+  initialBalance = FALLBACK_BALANCE,
+  minBet = FALLBACK_MIN_BET,
+  maxBet = FALLBACK_MAX_BET,
+  defaultBet = FALLBACK_DEFAULT_BET,
+  stepBet,
+  betLevels,
+  currencyCode = 'USD',
   onGameStart,
   onGameEnd,
   onStartRequest,
 }: BettingPanelProps) {
-  const [balance, setBalance] = useState(DEFAULT_BALANCE);
-  const [bet, setBet] = useState(1);
+  const effectiveStepBet = stepBet ?? Math.max(1, Math.floor((maxBet - minBet) / 10));
+  const initialBet = (() => {
+    const val = Math.max(minBet, Math.min(maxBet, defaultBet));
+    const snapped = Math.round(val / effectiveStepBet) * effectiveStepBet;
+    return Math.max(minBet, Math.min(maxBet, snapped));
+  })();
+  const [balance, setBalance] = useState(initialBalance);
+  const [bet, setBet] = useState(initialBet);
   const prevGameStartedRef = useRef(gameStarted);
 
-  const clampBet = useCallback((value: number) => {
-    return Math.max(MIN_BET, Math.min(MAX_BET, Math.round(value)));
-  }, []);
+  /** Snap value to nearest valid step (divisible by stepBet), clamped to min/max */
+  const snapToStep = useCallback(
+    (value: number, step: number) => {
+      const snapped = Math.round(value / step) * step;
+      return Math.max(minBet, Math.min(maxBet, snapped));
+    },
+    [minBet, maxBet]
+  );
+
+  const clampBet = useCallback(
+    (value: number) => snapToStep(value, effectiveStepBet),
+    [snapToStep, effectiveStepBet]
+  );
 
   const handleBetChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const raw = e.target.value.replace(/\D/g, '');
-      if (raw === '') {
-        setBet(MIN_BET);
+      const raw = e.target.value.replace(/[^\d.]/g, '').replace(/^(\d+\.\d*)\..*$/, '$1');
+      if (raw === '' || raw === '.') {
+        setBet(minBet);
         return;
       }
-      const num = parseInt(raw, 10);
-      if (!isNaN(num)) setBet(clampBet(num));
+      const internal = parseDisplayToInternal(raw);
+      if (internal !== null) setBet(clampBet(internal));
     },
-    [clampBet]
+    [clampBet, minBet]
   );
 
   const handleBetBlur = useCallback(() => {
@@ -46,12 +84,25 @@ export function BettingPanel({
   }, [clampBet]);
 
   const handleBetUp = useCallback(() => {
-    setBet((b) => clampBet(b * 2));
-  }, [clampBet]);
+    if (betLevels?.length) {
+      const nextIdx = betLevels.findIndex((l) => l > bet);
+      const level = nextIdx < 0 ? betLevels[betLevels.length - 1]! : betLevels[nextIdx]!;
+      setBet(level);
+    } else {
+      setBet((b) => clampBet(b + effectiveStepBet));
+    }
+  }, [bet, betLevels, clampBet, effectiveStepBet]);
 
   const handleBetDown = useCallback(() => {
-    setBet((b) => clampBet(b / 2));
-  }, [clampBet]);
+    if (betLevels?.length) {
+      const idx = betLevels.findIndex((l) => l >= bet);
+      const prevIdx = idx <= 0 ? 0 : idx - 1;
+      const level = betLevels[prevIdx]!;
+      setBet(level);
+    } else {
+      setBet((b) => clampBet(b - effectiveStepBet));
+    }
+  }, [bet, betLevels, clampBet, effectiveStepBet]);
 
   useEffect(() => {
     if (gameStarted && !prevGameStartedRef.current) {
@@ -61,9 +112,9 @@ export function BettingPanel({
   }, [gameStarted, bet]);
 
   const handlePlay = useCallback(() => {
-    if (bet > balance || bet < MIN_BET) return;
+    if (bet > balance || bet < minBet) return;
     onGameStart?.();
-  }, [bet, balance, onGameStart]);
+  }, [bet, balance, minBet, onGameStart]);
 
   useEffect(() => {
     onStartRequest?.(handlePlay);
@@ -76,7 +127,7 @@ export function BettingPanel({
     onGameEnd?.();
   }, [round, bet, onGameEnd]);
 
-  const canPlay = !gameStarted && bet <= balance && bet >= MIN_BET;
+  const canPlay = !gameStarted && bet <= balance && bet >= minBet;
   const showCashOut = gameStarted && round > 1;
   const cashOutAmount = showCashOut ? bet * getMultiplier(round) : 0;
 
@@ -87,8 +138,7 @@ export function BettingPanel({
           <div className="betting-card betting-card--balance">
             <span className="betting-card__label">BALANCE</span>
             <span className="betting-card__value">
-              <span className="betting-card__currency">$</span>
-              {balance.toLocaleString()}
+              {formatDisplayBalance({ amount: balance, currency: currencyCode })}
             </span>
           </div>
         </div>
@@ -102,7 +152,7 @@ export function BettingPanel({
           >
             <span className="play-button__cashout-label">CASH OUT</span>
             <span className="play-button__cashout-amount">
-              ${cashOutAmount.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+              {formatDisplayBalance({ amount: cashOutAmount, currency: currencyCode })}
             </span>
           </button>
         ) : (
@@ -121,12 +171,14 @@ export function BettingPanel({
           <div className={`betting-card betting-card--bet ${gameStarted ? 'betting-card--disabled' : ''}`}>
             <span className="betting-card__label">BET</span>
             <div className="betting-card__bet-row">
-              <span className="betting-card__currency">$</span>
+              <span className="betting-card__currency">
+                {(CURRENCY_META as Record<string, { symbol: string }>)[currencyCode]?.symbol ?? currencyCode}
+              </span>
               <input
                 type="text"
-                inputMode="numeric"
+                inputMode="decimal"
                 className="betting-card__input"
-                value={bet}
+                value={formatAmountForDisplay(bet, currencyCode)}
                 onChange={handleBetChange}
                 onBlur={handleBetBlur}
                 disabled={gameStarted}

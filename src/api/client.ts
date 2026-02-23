@@ -10,6 +10,8 @@ import type {
   BubbleClickRequest,
   BubbleClickResponse,
   CashoutResponse,
+  WalletAuthenticateRequest,
+  WalletAuthenticateResponse,
 } from './types';
 
 const API_BASE = import.meta.env.VITE_API_URL ?? '/api';
@@ -25,6 +27,35 @@ async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> 
   });
   if (!res.ok) {
     throw new Error(`API error: ${res.status} ${res.statusText}`);
+  }
+  return res.json();
+}
+
+/* --- Wallet (RGS) --- */
+
+/**
+ * Authenticates the session with the operator's Wallet API.
+ * Must be called before other wallet endpoints.
+ * rgs_url may be a hostname (e.g. rgsd.stake-engine.com) or full URL - we ensure https://.
+ */
+export async function walletAuthenticate(
+  rgsUrl: string,
+  data: WalletAuthenticateRequest
+): Promise<WalletAuthenticateResponse> {
+  const trimmed = rgsUrl.replace(/\/$/, '');
+  const base =
+    trimmed.startsWith('http://') || trimmed.startsWith('https://')
+      ? trimmed
+      : `https://${trimmed}`;
+  const url = `${base}/wallet/authenticate`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Wallet authenticate failed: ${res.status} ${res.statusText}${text ? ` - ${text}` : ''}`);
   }
   return res.json();
 }
